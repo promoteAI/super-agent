@@ -1,0 +1,31 @@
+version: "3"
+networks:
+  server:
+services:
+  indexify:
+    image: tensorlake/indexify-server:0.2.47
+    ports:
+      - 8900:8900
+    networks:
+      server:
+        aliases:
+          - indexify-server
+    volumes:
+      - data:/tmp/indexify-blob-storage
+  executor:
+    image: tensorlake/indexify-executor-default:3.10
+    command:
+      [
+        "indexify-cli",
+        "executor",
+        "--server-addr",
+        "indexify:8900",
+        "--dev"
+      ]
+    networks:
+      server:
+    volumes:
+      - data:/tmp/indexify-blob-storage
+
+volumes:
+  data:
