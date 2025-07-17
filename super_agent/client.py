@@ -154,7 +154,6 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
                                 )
                             )
                             started = True
-                        print("Chunk:", chunk.root.result)
                         chunk=chunk.root
                         # 解析A2A协议的chunk，转换为AG-UI事件
                         text = ""
@@ -171,35 +170,20 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
                                         text = part.root.text
                                     elif isinstance(part, dict) and "text" in part:
                                         text = part["text"]
-                                if not text:
-                                    try:
-                                        text = msg.model_dump_json(exclude_none=True)
-                                    except Exception:
-                                        text = str(msg)
                             else:
                                 # 其他类型，直接序列化
-                                text = str(chunk)
-                        # 2. 如果chunk有text字段
-                        elif hasattr(chunk, "text"):
-                            text = chunk.text
-                        # 3. 如果chunk有parts字段
-                        elif hasattr(chunk, "parts") and chunk.parts:
-                            part = chunk.parts[0]
-                            text = getattr(part, "text", "")
-                        # 4. 如果chunk有message且message有parts
-                        elif hasattr(chunk, "message") and hasattr(chunk.message, "parts"):
-                            part = chunk.message.parts[0]
-                            text = getattr(part, "text", "")
+                                text = ""
 
                         print("提取的文本:",text)
-                        # 输出AG-UI事件
-                        yield encoder.encode(
-                            TextMessageContentEvent(
-                                type=EventType.TEXT_MESSAGE_CONTENT,
-                                message_id=message_id,
-                                delta=text if text else ""
+                        if text:
+                            # 输出AG-UI事件
+                            yield encoder.encode(
+                                TextMessageContentEvent(
+                                    type=EventType.TEXT_MESSAGE_CONTENT,
+                                    message_id=message_id,
+                                    delta=text
+                                )
                             )
-                        )
                     except (asyncio.CancelledError, GeneratorExit):
                         logger.info("前端已关闭连接，停止发送流式内容。")
                         break
@@ -232,8 +216,8 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
 
 # 调用agui_send_message_streaming测试
 if __name__ == '__main__':
-    # import uvicorn
-    # uvicorn.run(app, host="0.0.0.0", port=8000)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
     import asyncio
     from ag_ui.core import RunAgentInput, UserMessage
     from uuid import uuid4
