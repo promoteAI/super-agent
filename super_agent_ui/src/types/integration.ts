@@ -1,6 +1,7 @@
 import { AbstractAgent } from "@ag-ui/client";
 
 export type Feature =
+    "agentic_a2a_chat"
   | "agentic_chat"
   | "agentic_generative_ui"
   | "human_in_the_loop"

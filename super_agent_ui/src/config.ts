@@ -18,6 +18,12 @@ function createFeatureConfig({
 
 export const featureConfig: FeatureConfig[] = [
   createFeatureConfig({
+    id: "agentic_a2a_chat",
+    name: "Agentic a2a Chat",
+    description: "Chat with your Copilot and call frontend tools",
+    tags: ["Chat", "Tools", "Streaming"],
+  }),
+  createFeatureConfig({
     id: "agentic_chat",
     name: "Agentic Chat",
     description: "Chat with your Copilot and call frontend tools",
