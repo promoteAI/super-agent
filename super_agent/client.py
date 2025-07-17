@@ -232,39 +232,39 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
 
 # 调用agui_send_message_streaming测试
 if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-    # import asyncio
-    # from ag_ui.core import RunAgentInput, UserMessage
-    # from uuid import uuid4
+    # import uvicorn
+    # uvicorn.run(app, host="0.0.0.0", port=8000)
+    import asyncio
+    from ag_ui.core import RunAgentInput, UserMessage
+    from uuid import uuid4
 
-    # class DummyRequest:
-    #     def __init__(self):
-    #         self.headers = {"accept": "application/json"}
+    class DummyRequest:
+        def __init__(self):
+            self.headers = {"accept": "application/json"}
 
-    # async def test_agui_send_message_streaming():
-    #     # 构造测试输入，补全所有必需字段，messages用UserMessage实例
-    #     input_data = RunAgentInput(
-    #         thread_id="test_thread",
-    #         run_id="test_run",
-    #         state={},  # 必填字段，填空字典
-    #         tools=[],  # 必填字段，填空列表
-    #         context=[],  # 必填字段，填空字典
-    #         forwardedProps={},  # 必填字段，填空字典
-    #         messages=[
-    #             UserMessage(
-    #                 id=uuid4().hex,  # 必填字段，补充id
-    #                 role="user",
-    #                 content="你好，帮我推荐海南旅游路线"
-    #             )
-    #         ]
-    #     )
-    #     request = DummyRequest()
-    #     # 调用接口
-    #     response = await agui_send_message_streaming(input_data, request)
-    #     print("StreamingResponse内容类型:", response.media_type)
-    #     # 读取流式内容
-    #     async for chunk in response.body_iterator:
-    #         print(chunk.decode("utf-8") if isinstance(chunk, bytes) else chunk)
+    async def test_agui_send_message_streaming():
+        # 构造测试输入，补全所有必需字段，messages用UserMessage实例
+        input_data = RunAgentInput(
+            thread_id="test_thread",
+            run_id="test_run",
+            state={},  # 必填字段，填空字典
+            tools=[],  # 必填字段，填空列表
+            context=[],  # 必填字段，填空字典
+            forwardedProps={},  # 必填字段，填空字典
+            messages=[
+                UserMessage(
+                    id=uuid4().hex,  # 必填字段，补充id
+                    role="user",
+                    content="你好，2025年8月20日到2025年8月25日我要做头等舱从北京到上海去旅游"
+                )
+            ]
+        )
+        request = DummyRequest()
+        # 调用接口
+        response = await agui_send_message_streaming(input_data, request)
+        print("StreamingResponse内容类型:", response.media_type)
+        # 读取流式内容
+        async for chunk in response.body_iterator:
+            print(chunk.decode("utf-8") if isinstance(chunk, bytes) else chunk)
 
-    # asyncio.run(test_agui_send_message_streaming())
+    asyncio.run(test_agui_send_message_streaming())

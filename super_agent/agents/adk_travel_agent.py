@@ -14,7 +14,7 @@ from google.adk.agents import Agent
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from google.genai import types as genai_types
-from super_agent.common.llm import get_openai_chat_model
+from super_agent.common.llm import get_openai_chat_model,OpenAICompatibleLlm
 
 
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ class TravelAgent(BaseAgent):
         self.agent = Agent(
             name=self.agent_name,
             instruction=self.instructions,
-            model=get_openai_chat_model(),
+            model=OpenAICompatibleLlm(),
             disallow_transfer_to_parent=True,
             disallow_transfer_to_peers=True,
             generate_content_config=generate_content_config,
