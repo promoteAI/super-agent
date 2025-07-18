@@ -156,7 +156,7 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
                             started = True
                         chunk=chunk.root
                         # 解析A2A协议的chunk，转换为AG-UI事件
-                        text = ""
+                        msg = ""
 
                         # 1. 如果chunk有result字段，说明是一次性响应（如SendStreamingMessageSuccessResponse）
                         if hasattr(chunk, "result"):
@@ -164,24 +164,15 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
                             # result为TaskStatusUpdateEvent（含status.message）
                             if result and hasattr(result, "status") and hasattr(result.status, "message"):
                                 msg = result.status.message
-                                if hasattr(msg, "parts") and msg.parts:
-                                    part = msg.parts[0]
-                                    if hasattr(part, "root") and hasattr(part.root, "text"):
-                                        text = part.root.text
-                                    elif isinstance(part, dict) and "text" in part:
-                                        text = part["text"]
-                            else:
-                                # 其他类型，直接序列化
-                                text = ""
 
-                        print("提取的文本:",text)
-                        if text:
+                        print("提取的文本:",msg)
+                        if msg:
                             # 输出AG-UI事件
                             yield encoder.encode(
                                 TextMessageContentEvent(
                                     type=EventType.TEXT_MESSAGE_CONTENT,
                                     message_id=message_id,
-                                    delta=text
+                                    delta=get_message_text(msg)
                                 )
                             )
                     except (asyncio.CancelledError, GeneratorExit):
