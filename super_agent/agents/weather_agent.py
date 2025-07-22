@@ -31,7 +31,7 @@ async def create_weather_agent(
     instructions: str,
     skills: list[AgentSkill] = None,
     allowed_tools: set[str] = None,
-    model: str = "gemma2",
+    model: str = "",
     use_stdio: bool = settings.use_stdio,
 ) -> BaseAgent:
     """创建并配置一个天气代理
@@ -71,9 +71,9 @@ async def create_weather_agent(
     # 返回配置好的代理实例
     return BaseAgent(
         capabilities=AgentCapabilities(
-            pushNotifications=False,  # 是否支持推送通知
-            stateTransitionHistory=False,  # 是否记录状态转换历史
-            streaming=False  # 是否支持流式传输
+            pushNotifications=True,  # 是否支持推送通知
+            stateTransitionHistory=True,  # 是否记录状态转换历史
+            streaming=True  # 是否支持流式传输
         ),
         defaultInputModes=["text"],  # 默认输入模式
         defaultOutputModes=["text"],  # 默认输出模式
