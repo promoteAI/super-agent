@@ -19,8 +19,8 @@ settings = WeatherMcpSettings()
 
 # 标准输入输出参数配置
 stdio_params = StdioServerParameters(
-    command="python",  # 使用的命令
-    args=["-m", "mcp_weather_free"]  # 命令参数
+    command="uvx",  # 使用的命令
+    args= ["--from", "git+https://github.com/microagents/mcp-servers.git#subdirectory=mcp-weather-free", "mcp-weather-free"]  # 命令参数
 )
 
 
