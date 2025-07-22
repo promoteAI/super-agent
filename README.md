@@ -29,3 +29,9 @@ uv run super_agent/agents/ --agent-card super_agent/agent_cards/hotel_booking_ag
 ```shell
 uv run super_agent/agents/ --agent-card super_agent/agent_cards/car_rental_agent.json --port 10105
 ```
+
+# 天气MCP服务
+
+uvx --from git+https://github.com/microagents/mcp-servers.git#subdirectory=mcp-weather-free mcp-weather-free
+
+pip install git+https://github.com/microagents/mcp-servers.git#subdirectory=mcp-weather-free

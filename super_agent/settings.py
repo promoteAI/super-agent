@@ -4,10 +4,19 @@ import logging
 import os
 from functools import lru_cache
 from typing import Optional
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings,SettingsConfigDict
 from uvicorn.logging import DefaultFormatter
 
+class ConfiguredBaseSettings(BaseSettings):
+    """Azure credentials."""
 
+    model_config = SettingsConfigDict(
+        case_sensitive=False,
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_nested_delimiter="__",
+        extra="ignore",
+    )
 class Model_Config(BaseSettings):
     """Model configuration settings.
 
