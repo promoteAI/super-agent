@@ -8,7 +8,7 @@ from a2a.server.agent_execution import AgentExecutor
 from a2a.server.agent_execution.context import RequestContext
 from a2a.server.events.event_queue import EventQueue
 from a2a.types import AgentCard, Message, Part, Role, TextPart
-from openai import NOT_GIVEN, AsyncAzureOpenAI, NotGiven
+from openai import NOT_GIVEN, AsyncOpenAI, NotGiven
 from openai.types.chat.chat_completion import ChatCompletion
 from openai.types.chat.chat_completion_message_tool_call import (
     ChatCompletionMessageToolCall,
@@ -67,7 +67,7 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
 
         # Initialize OpenAI client
         client = get_client(
-            AsyncAzureOpenAI,
+            AsyncOpenAI,
             options=settings.openai_model_config,
         )
 
@@ -196,7 +196,7 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
 
         """
         result = await self.invoke(context=context)
-        event_queue.enqueue_event(result)
+        await event_queue.enqueue_event(result)  # 添加await关键字
 
     async def cancel(self, context: RequestContext, event_queue: EventQueue):
         """Cancel the current operation for the agent.

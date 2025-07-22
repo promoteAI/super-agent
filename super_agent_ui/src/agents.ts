@@ -9,7 +9,7 @@ export const agentsIntegrations: AgentIntegrationConfig[] = [
     agents: async () => {
       return {
         agentic_a2a_chat: new ServerStarterAllFeaturesAgent({
-          url: "http://localhost:8000/agentic_a2a_chat",
+          url: "http://localhost:8000/api/agent/agentic_a2a_chat",
         }),
         agentic_chat: new ServerStarterAllFeaturesAgent({
           url: "http://localhost:8000/agentic_chat",

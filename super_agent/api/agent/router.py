@@ -3,6 +3,7 @@
 import asyncio
 import uuid
 from typing import AsyncGenerator, Dict, List
+import httpx
 
 from a2a.server.events.event_consumer import EventConsumer
 from a2a.server.events.event_queue import EventQueue
@@ -16,9 +17,10 @@ from ag_ui.core import (
     TextMessageContentEvent,
     TextMessageEndEvent,
     TextMessageStartEvent,
+    UserMessage,
 )
 from ag_ui.encoder import EventEncoder
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException,Request
 from fastapi.responses import StreamingResponse
 
 from super_agent.agents.registry import agent_registry
@@ -105,6 +107,7 @@ async def process_message(
     task.add_done_callback(consumer.agent_task_callback)
     started = False
     async for event in consumer.consume_all():
+        print("event",event)
         if not started:
             # Send text message start event
             yield encoder.encode(
@@ -163,3 +166,21 @@ async def stream_message(runId: str):  # noqa: N803
         raise HTTPException(status_code=404, detail="Job not found")
     del job_generators[runId]
     return StreamingResponse(generator, media_type="text/event-stream")
+
+@router.post("/agentic_a2a_chat")
+async def agui_send_message_streaming(input_data: RunAgentInput, request: Request):
+    """
+    AG-UI协议流式消息处理接口
+    """
+    # 简单示例：根据关键词选择agent
+    agent_id = "weather_query_agent"
+    # 发送启动消息请求
+    runId = (await send_message(agentId=agent_id, message=input_data))["runId"]
+
+    # 获取流式响应
+    return await stream_message(runId)    
+    
+    
+
+    
+    

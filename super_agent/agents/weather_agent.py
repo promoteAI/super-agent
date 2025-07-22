@@ -54,7 +54,7 @@ async def create_weather_agent(
     """
     # 生成代理ID，将名称转换为小写并用-替换空格
     agent_id = name.lower().replace(" ", "-")
-
+    print("天气agent_id:",agent_id)
     # 初始化工具注册表
     tool_registry = ToolRegistry()
 

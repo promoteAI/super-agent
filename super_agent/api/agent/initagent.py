@@ -16,7 +16,7 @@ async def initialise_agent_registry() -> None:
 
     # 创建天气agent实例
     weather_agent = await create_weather_agent(
-        name="天气查询Agent",
+        name="weather_query_agent",
         description="用于查询天气信息的Agent",
         version="0.1.0",
         instructions="该Agent负责处理天气查询请求",

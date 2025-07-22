@@ -102,9 +102,7 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
         # 在生成器内部创建httpx_client和A2AClient，保证流式期间client不关闭
         async with httpx.AsyncClient(timeout=120) as httpx_client:
             try:
-                agent_card = await get_final_agent_card(httpx_client)
-                print("AgentCard", agent_card)
-                client = A2AClient(httpx_client=httpx_client, agent_card=agent_card)
+                client = A2AClient(httpx_client=httpx_client)
 
                 # 构造A2A协议的消息内容
                 # 这里只取最后一条用户消息作为输入
@@ -208,7 +206,7 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
 # 调用agui_send_message_streaming测试
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # uvicorn.run(app, host="0.0.0.0", port=8000)
     import asyncio
     from ag_ui.core import RunAgentInput, UserMessage
     from uuid import uuid4
