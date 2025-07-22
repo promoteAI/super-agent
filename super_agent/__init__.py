@@ -2,7 +2,7 @@
 
 import click
 
-from super_agent.mcp import server
+# from super_agent.mcp import server
 
 
 @click.command()
