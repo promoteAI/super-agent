@@ -119,7 +119,7 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
             tool_choice=tool_choice,
             temperature=temperature,
         )
-
+        print("Response:",response)
         tool_calls = response.choices[0].message.tool_calls
 
         while tool_calls:

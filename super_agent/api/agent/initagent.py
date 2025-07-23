@@ -62,7 +62,7 @@ async def initialise_agent_registry() -> None:
             ),
         ],
         allowed_tools={"get_weather", "get_weather_by_city"},
-        model="gemma2",
+        model="deepseek-r1-distill-qwen-7b",
         use_stdio=True,
     )
 

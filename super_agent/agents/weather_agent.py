@@ -68,6 +68,8 @@ async def create_weather_agent(
     # 注册MCP服务器
     await tool_registry.register_mcp_server(weather_mcp, allowed_tools)
 
+    print("天气助手已注册的工具:",tool_registry.tools)
+
     # 返回配置好的代理实例
     return BaseAgent(
         capabilities=AgentCapabilities(

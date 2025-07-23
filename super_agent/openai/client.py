@@ -43,12 +43,36 @@ if __name__ == '__main__':
         options=settings.openai_model_config,
     )
     messages = [
-        {"role": "system", "content": "你是一个有帮助的助手"},
-        {"role": "user", "content": "你好，请帮我写一封感谢信"}
+      {
+        "role": "user",
+        "content": "What is the weather like in Paris today?"
+      }
     ]
     resp=client.chat.completions.create(
         messages=messages,
-        model="gemma2",
-        temperature=0.5
+        model="deepseek-r1-distill-qwen-7b",
+        temperature=0.5,
+        tools= [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_weather",
+          "description": "Get current temperature for a given location.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "description": "City and country (e.g., Bogotá, Colombia)"
+              }
+            },
+            "required": ["location"],
+            "additionalProperties": False
+          },
+          "strict": True
+        }
+      }
+    ],
+    tool_choice="auto"
     )
     print(resp)

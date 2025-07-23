@@ -80,7 +80,6 @@ class ToolRegistry:
 
         """
         tools = await mcp_server.list_tools()
-        print("MCP TOOLS",tools)
         for tool in tools.tools:
             if allowed_tools is None or tool.name in allowed_tools:
                 mcp_tool = MCPTool(
