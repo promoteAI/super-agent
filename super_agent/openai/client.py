@@ -6,14 +6,14 @@ from typing import (
 )
 
 from cachetools import TTLCache, cached
-from openai import OpenAI
+from litellm import completion
 from super_agent.settings import Model_Config
 
-T = TypeVar("T", bound=OpenAI)
+T = TypeVar("T", bound=completion)
 
 
 def _hashable_dict(d: dict) -> tuple:
-    """Convert a dictionary to a hashable tuple."""
+    """将字典转换为可哈希的元组"""
     return tuple((k, v) for k, v in sorted(d.items()))
 
 
@@ -21,14 +21,14 @@ def _hashable_dict(d: dict) -> tuple:
 def get_client(
     client: Callable[..., T], options: Model_Config
 ) -> T:
-    """Initialize and returns an instance of the specified client using the provided credentials or options.
+    """使用提供的凭据或选项初始化并返回指定客户端的实例
 
     Args:
-        client (Callable[..., T]): The client class or factory function to instantiate.
-        options (Model_Config): Configuration options for the client.
+        client (Callable[..., T]): 要实例化的客户端类或工厂函数
+        options (Model_Config): 客户端的配置选项
 
     Returns:
-        T: An instance of the specified client, initialized with the provided options.
+        T: 使用提供的选项初始化的指定客户端的实例
     """
 
     assert isinstance(options, Model_Config), "Options must be a Model_Config instance"
@@ -39,31 +39,31 @@ if __name__ == '__main__':
     from super_agent.settings import settings
     print(settings.openai_model_config)
     client = get_client(
-        OpenAI,
+        completion,
         options=settings.openai_model_config,
     )
     messages = [
       {
         "role": "user",
-        "content": "What is the weather like in Paris today?"
+        "content": "北京今天天气如何？"
       }
     ]
-    resp=client.chat.completions.create(
+    resp = client(
         messages=messages,
-        model="deepseek-r1-distill-qwen-7b",
+        model="ollama_chat/llama3.2",
         temperature=0.5,
         tools= [
       {
         "type": "function",
         "function": {
           "name": "get_weather",
-          "description": "Get current temperature for a given location.",
+          "description": "获取指定城市的当前天气",
           "parameters": {
             "type": "object",
             "properties": {
               "location": {
                 "type": "string",
-                "description": "City and country (e.g., Bogotá, Colombia)"
+                "description": "城市名称"
               }
             },
             "required": ["location"],

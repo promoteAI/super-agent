@@ -2,9 +2,9 @@
 
 import inspect
 from functools import wraps
-from typing import Callable, ParamSpec, Type, TypeVar
+from typing import Callable, ParamSpec, Type, TypeVar, Union
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, ValidationError
 
 # Define a generic type variable bound to BaseOptions.
 T = TypeVar("T", bound="BaseModel")
@@ -35,11 +35,21 @@ def validate_options(expected: Type[T]) -> Callable[[Callable[P, R]], Callable[P
             bound_args = sig.bind(*args, **kwargs)
             bound_args.apply_defaults()
 
-            # If 'options' is present and is a dict, validate it.
+            # If 'options' is present, validate it
             if "options" in bound_args.arguments:
                 value = bound_args.arguments["options"]
-                if isinstance(value, dict):
-                    bound_args.arguments["options"] = expected.model_validate(value)
+                try:
+                    if isinstance(value, dict):
+                        # Convert nested dict values to their expected types
+                        if "tool_call" in value and isinstance(value["tool_call"], dict):
+                            from openai.types.chat.chat_completion_message_tool_call import ChatCompletionMessageToolCall
+                            value["tool_call"] = ChatCompletionMessageToolCall(**value["tool_call"])
+                        bound_args.arguments["options"] = expected.model_validate(value)
+                    elif not isinstance(value, expected):
+                        raise ValueError(f"Options must be of type {expected} or dict")
+                except ValidationError as e:
+                    raise ValueError(f"Invalid options: {e.errors()}") from e
+                    
             return func(*bound_args.args, **bound_args.kwargs)
 
         return wrapper

@@ -25,6 +25,7 @@ from super_agent.openai.tools import ChatCompletionToolParam
 from super_agent.pydantic import ConfiguredBaseModel
 from super_agent.tools.registry import ToolRegistry
 from super_agent.settings import settings
+from litellm import completion
 
 
 class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
@@ -70,14 +71,22 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
             AsyncOpenAI,
             options=settings.openai_model_config,
         )
+        return completion(
+                    model=model, 
+                    api_key="",  # 直接传入API key
+                    api_base="http://localhost:11434",  # 直接传入API base
+                    messages=messages,
+                    tools=tools,
+                    tool_choice="auto"
+                )
 
-        return await client.chat.completions.create(
-            messages=messages,
-            model=model,
-            temperature=temperature,
-            tools=tools,
-            tool_choice=tool_choice,
-        )
+        # return await client.chat.completions.create(
+        #     messages=messages,
+        #     model=model,
+        #     temperature=temperature,
+        #     tools=tools,
+        #     tool_choice=tool_choice,
+        # )
 
     async def _process_tool_call(
         self, tool_call: ChatCompletionMessageToolCall
@@ -92,7 +101,7 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
 
         tool = self.tool_registry[tool_call.function.name]
 
-        tool_response = await tool.run(options={"tool_call": tool_call})
+        tool_response = await tool.run(options={"tool_call": tool_call.model_dump()})
 
         if tool_response:
             return tool_response
