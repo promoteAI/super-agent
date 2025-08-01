@@ -39,7 +39,7 @@ async def initialise_agent_registry() -> None:
             ),
         ],
         allowed_tools={"get_weather", "get_weather_by_city"},
-        model="ollama_chat/llama3.2",
+        model="ollama_chat/gemma3n",
         use_stdio=True,
     )
 

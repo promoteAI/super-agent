@@ -5,7 +5,7 @@ import { ServerStarterAllFeaturesAgent } from "./server-starter-all-features";
 
 export const agentsIntegrations: AgentIntegrationConfig[] = [
   {
-    id: "server-starter-all-features",
+    id: "agentic_a2a_chat",
     agents: async () => {
       return {
         agentic_a2a_chat: new ServerStarterAllFeaturesAgent({
