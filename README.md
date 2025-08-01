@@ -1,37 +1,45 @@
-## 安装依赖环境
-## 启动所有服务
-1. 启动mcp服务
-```shell
-uv run super_agent --run mcp-server --transport sse
+# Super Agent
+
+一个智能对话代理系统，包含后端服务和前端UI界面。
+
+## 项目结构
+
+- `super_agent/` - 后端服务
+- `super_agent_ui/` - 前端UI界面
+
+## 快速开始
+
+### 1. 启动后端服务
+
+```bash
+cd super_agent
+uv run main.py
 ```
 
-2. 启动 Orchestrator 代理：
-```shell
-uv run super_agent/agents/ --agent-card super_agent/agent_cards/orchestrator_agent.json --port 10101
+### 2. 启动前端UI服务
+
+```bash
+cd super_agent_ui
+pnpm dev
 ```
 
-3. 启动 Planner 代理：
-```shell
-uv run super_agent/agents/ --agent-card super_agent/agent_cards/planner_agent.json --port 10102
-```
+### 3. 访问应用
 
-4. 启动 Airline Ticketing Agent：
-```shell
-uv run super_agent/agents/ --agent-card super_agent/agent_cards/air_ticketing_agent.json --port 10103
-```
+打开浏览器访问 [http://localhost:3000](http://localhost:3000) 开始与智能代理对话。
 
-5. 启动 Hotel Reservations Agent：
-```shell
-uv run super_agent/agents/ --agent-card super_agent/agent_cards/hotel_booking_agent.json --port 10104
-```
+## 技术栈
 
-6. 启动 Car Rental Reservations Agent：
-```shell
-uv run super_agent/agents/ --agent-card super_agent/agent_cards/car_rental_agent.json --port 10105
-```
+- **后端**: Python + UV
+- **前端**: React + TypeScript + Vite
+- **包管理**: pnpm
 
-# 天气MCP服务
+## 开发环境要求
 
-uvx --from git+https://github.com/microagents/mcp-servers.git#subdirectory=mcp-weather-free mcp-weather-free
+- Node.js 18+
+- Python 3.10+
+- UV (Python包管理器)
+- pnpm
 
-pip install git+https://github.com/microagents/mcp-servers.git#subdirectory=mcp-weather-free
+## 贡献
+
+欢迎提交Issue和Pull Request来改进这个项目。
