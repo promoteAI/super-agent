@@ -94,7 +94,7 @@ export function Sidebar({ activeTab = "preview", onTabChange, readmeContent }: S
         <div className="flex items-center justify-between ml-1">
           <div className="flex items-start flex-col">
             <h1 className={`text-lg font-light ${isDarkTheme ? "text-white" : "text-gray-900"}`}>
-              AG-UI Interactive Dojo
+              AG-UI Interactive Demo
             </h1>
           </div>
 
