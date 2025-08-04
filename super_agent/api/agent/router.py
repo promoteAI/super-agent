@@ -173,7 +173,7 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
     AG-UI协议流式消息处理接口
     """
     # 简单示例：根据关键词选择agent
-    agent_id = "weather_query_agent"
+    agent_id = "search_query_agent"
     # 发送启动消息请求
     runId = (await send_message(agentId=agent_id, message=input_data))["runId"]
 

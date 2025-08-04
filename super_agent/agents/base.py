@@ -8,7 +8,7 @@ from a2a.server.agent_execution import AgentExecutor
 from a2a.server.agent_execution.context import RequestContext
 from a2a.server.events.event_queue import EventQueue
 from a2a.types import AgentCard, Message, Part, Role, TextPart
-from openai import NOT_GIVEN, AsyncOpenAI, NotGiven
+from litellm import completion
 from openai.types.chat.chat_completion import ChatCompletion
 from openai.types.chat.chat_completion_message_tool_call import (
     ChatCompletionMessageToolCall,
@@ -62,22 +62,17 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
         messages: List[ChatCompletionMessageParam],
         model: str,
         temperature: float = 0.0,
-        tools: list[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
-        tool_choice: str | NotGiven = NOT_GIVEN,
+        tools: list[ChatCompletionToolParam] = [],
+        tool_choice: str ="auto",
     ) -> ChatCompletion:
-
-        # Initialize OpenAI client
-        client = get_client(
-            AsyncOpenAI,
-            options=settings.openai_model_config,
-        )
         return completion(
                     model=model, 
-                    api_key="",  # 直接传入API key
-                    api_base="http://localhost:11434",  # 直接传入API base
+                    api_key=settings.openai_model_config.api_key, 
+                    api_base=settings.openai_model_config.base_url,
                     messages=messages,
                     tools=tools,
-                    tool_choice="auto"
+                    tool_choice=tool_choice,
+                    temperature=temperature,
                 )
 
         # return await client.chat.completions.create(
@@ -117,8 +112,8 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
         messages: List[ChatCompletionMessageParam],
         model: str,
         temperature: float = 0.0,
-        tools: list[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
-        tool_choice: str | NotGiven = NOT_GIVEN,
+        tools: list[ChatCompletionToolParam] = [],
+        tool_choice: str = "auto",
     ) -> Message:
 
         response = await self._get_llm_response(
@@ -141,6 +136,7 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
 
             messages.append(create_message(**response.choices[0].message.model_dump()))
             messages.extend(tool_responses)
+            print("Messages:",messages)
 
             # return the tool responses to the model, if we get more tool calls these
             # will be processed in the next loop
@@ -185,7 +181,7 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
             context_id=context.context_id,
             messages=messages,
             model=self.model,
-            tools=self.tool_registry.tools if self.tool_registry else NOT_GIVEN,
+            tools=self.tool_registry.tools if self.tool_registry else [],
         )
 
     async def execute(self, context: RequestContext, event_queue: EventQueue):

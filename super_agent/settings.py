@@ -27,9 +27,10 @@ class Model_Config(BaseSettings):
         temperature: Sampling temperature, defaults to 0.7.
         max_tokens: Maximum number of tokens to generate, defaults to 2048.
     """
-    api_key: str = os.getenv("API_KEY", "gpustack_99bb71d05be3a1e8_cd2464128f60d27dc9a0b48c76f6f0f4")
-    base_url: str = os.getenv("BASE_URL", "http://10.102.32.39:9999/v1")
-
+    api_key: str = os.getenv("API_KEY", "")
+    base_url: str = os.getenv("BASE_URL", "http://localhost:11434")
+    model: str = "ollama_chat/llama3.2"
+    
 class Settings(BaseSettings):
     """Settings for the API application."""
 
