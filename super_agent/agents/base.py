@@ -8,7 +8,7 @@ from a2a.server.agent_execution import AgentExecutor
 from a2a.server.agent_execution.context import RequestContext
 from a2a.server.events.event_queue import EventQueue
 from a2a.types import AgentCard, Message, Part, Role, TextPart
-from litellm import completion
+from openai import OpenAI,AsyncOpenAI
 from openai.types.chat.chat_completion import ChatCompletion
 from openai.types.chat.chat_completion_message_tool_call import (
     ChatCompletionMessageToolCall,
@@ -65,23 +65,14 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
         tools: list[ChatCompletionToolParam] = [],
         tool_choice: str ="auto",
     ) -> ChatCompletion:
-        return completion(
-                    model=model, 
-                    api_key=settings.openai_model_config.api_key, 
-                    api_base=settings.openai_model_config.base_url,
-                    messages=messages,
-                    tools=tools,
-                    tool_choice=tool_choice,
-                    temperature=temperature,
-                )
-
-        # return await client.chat.completions.create(
-        #     messages=messages,
-        #     model=model,
-        #     temperature=temperature,
-        #     tools=tools,
-        #     tool_choice=tool_choice,
-        # )
+        client=get_client(AsyncOpenAI,options=settings.openai_model_config)
+        return await client.chat.completions.create(
+            messages=messages,
+            model=model,
+            temperature=temperature,
+            tools=tools,
+            tool_choice=tool_choice,
+        )
 
     async def _process_tool_call(
         self, tool_call: ChatCompletionMessageToolCall
@@ -96,7 +87,7 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
 
         tool = self.tool_registry[tool_call.function.name]
 
-        tool_response = await tool.run(options={"tool_call": tool_call.model_dump()})
+        tool_response = await tool.run(options={"tool_call": tool_call})
 
         if tool_response:
             return tool_response

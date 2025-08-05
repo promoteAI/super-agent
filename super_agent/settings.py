@@ -28,8 +28,7 @@ class Model_Config(BaseSettings):
         max_tokens: Maximum number of tokens to generate, defaults to 2048.
     """
     api_key: str = os.getenv("API_KEY", "")
-    base_url: str = os.getenv("BASE_URL", "http://localhost:11434")
-    model: str = "ollama_chat/llama3.2"
+    base_url: str = os.getenv("BASE_URL", "http://localhost:11434/v1")
     
 class Settings(BaseSettings):
     """Settings for the API application."""
