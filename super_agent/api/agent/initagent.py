@@ -60,7 +60,7 @@ async def initialise_agent_registry() -> None:
             )
         ],
         allowed_tools={"search"},
-        model=os.getenv("MODEL_NAME", "llama3.2"),
+        model=os.getenv("MODEL_NAME", "qwen3"),
         use_stdio=True,
     )
 
