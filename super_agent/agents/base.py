@@ -22,10 +22,9 @@ from super_agent.messages.create import (
 )
 from super_agent.openai.client import get_client
 from super_agent.openai.tools import ChatCompletionToolParam
-from super_agent.pydantic import ConfiguredBaseModel
+from super_agent.pydantic_utils import ConfiguredBaseModel
 from super_agent.tools.registry import ToolRegistry
 from super_agent.settings import settings
-from litellm import completion
 
 
 class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
@@ -65,8 +64,8 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
         tools: list[ChatCompletionToolParam] = [],
         tool_choice: str ="auto",
     ) -> ChatCompletion:
-        client=get_client(AsyncOpenAI,options=settings.openai_model_config)
-        return await client.chat.completions.create(
+        client=get_client(OpenAI,options=settings.openai_model_config)
+        return client.chat.completions.create(
             messages=messages,
             model=model,
             temperature=temperature,
@@ -102,11 +101,11 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
         context_id: str,
         messages: List[ChatCompletionMessageParam],
         model: str,
-        temperature: float = 0.0,
+        temperature: float = 0.5,
         tools: list[ChatCompletionToolParam] = [],
         tool_choice: str = "auto",
     ) -> Message:
-
+        print("工具tools:",tools)
         response = await self._get_llm_response(
             messages,
             model,
@@ -155,7 +154,7 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
     async def invoke(self, context: RequestContext) -> Message:
         """Invoke the agent with the given context."""
         # Initialize OpenAI client
-
+        print("上下文context---:",context.__dict__)
         messages = [
             create_message(role="system", content=self.instructions),
         ]
@@ -167,7 +166,7 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
                 )
             ]
         )
-
+        print("messages",messages)
         return await self._process_message(
             context_id=context.context_id,
             messages=messages,

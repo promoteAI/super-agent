@@ -45,26 +45,34 @@ if __name__ == '__main__':
     messages = [
         {
             "role": "user",
-            "content": "北京今天天气如何？"
+            "content": "鞠婧祎是谁？"
         }
     ]
     tools = [
         {
             "type": "function",
             "function": {
-                "name": "get_weather",
-                "description": "获取指定城市的当前天气",
+                "name": "search",
+                "description": 
+                    "通过query进行网页搜索"
+                ,
                 "parameters": {
-                    "type": "object",
                     "properties": {
-                        "location": {
-                            "type": "string",
-                            "description": "城市名称"
+                        "query": {
+                            "title": "用户输入的需要检索的关键字",
+                            "type": "string"
+                        },
+                        "max_results": {
+                            "type": "integer",
+                            "title": "Max Results"
                         }
                     },
-                    "required": ["location"],
+                    "required": ["query"],
+                    "title": "search",
+                    "type": "object",
                     "additionalProperties": False
-                }
+                },
+                "strict": True
             }
         }
     ]

@@ -28,7 +28,7 @@ async def initialise_agent_registry() -> None:
 ### 1. `search`
 - **功能**：执行网络搜索，返回结构化结果。
 - **参数**：
-    - `query`（必填）：用户问题
+    - `query`（必填）：用户输入的问题
     - `max_results`（可选）：返回结果数（整数）
 
 如需调用工具，请合理选择并准确填写参数。

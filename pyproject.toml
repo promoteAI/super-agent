@@ -1,11 +1,12 @@
 [project]
 name = "super-agent"
 version = "0.1.0"
-description = "Add your description here"
+description = "超级Agent"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "a2a-sdk",
+    "a2a-sdk>=0.2.5",
+    "ag-ui-protocol>=0.1.5",
     "click>=8.1.8",
     "fastmcp>=1.0",
     "google-adk>=1.0.0",

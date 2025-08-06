@@ -9,7 +9,7 @@ from mcp.types import CallToolResult, ListToolsResult
 from pydantic import BaseModel, Field, HttpUrl
 
 from super_agent.messages.create import ChatCompletionToolMessageParam
-from super_agent.pydantic import ConfiguredBaseModel
+from super_agent.pydantic_utils import ConfiguredBaseModel
 from super_agent.tools.base import BaseTool, BaseToolOptions
 from super_agent.utils.options import validate_options
 

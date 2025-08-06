@@ -90,6 +90,11 @@ async def process_message(
 
     # Create a streaming completion request
     queue = EventQueue()
+    last_message_content = None
+    last_message_role = None
+    if message.messages and len(message.messages) > 0:
+        last_message = message.messages[-1]
+        last_message_content = last_message.content
     task = asyncio.create_task(
         agent_registry.execute_agent(
             agentId,
@@ -97,7 +102,7 @@ async def process_message(
             options={
                 "message_id": message_id,
                 "role": Role.user,
-                "text": message.messages[0].content,
+                "text": last_message_content,
                 "thread_id": message.thread_id,
             },
         )
@@ -172,6 +177,7 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
     """
     AG-UI协议流式消息处理接口
     """
+    print("input_data:",input_data)
     # 简单示例：根据关键词选择agent
     agent_id = "search_query_agent"
     # 发送启动消息请求

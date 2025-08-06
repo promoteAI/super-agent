@@ -5,7 +5,7 @@ from typing import List, Optional
 from openai.types.chat.chat_completion_tool_param import ChatCompletionToolParam
 
 from super_agent.mcp.base import BaseHttpMcpSession, MCPTool
-from super_agent.pydantic import model_from_schema
+from super_agent.pydantic_utils import model_from_schema
 from super_agent.tools.base import BaseTool
 
 
@@ -82,13 +82,17 @@ class ToolRegistry:
         tools = await mcp_server.list_tools()
         for tool in tools.tools:
             if allowed_tools is None or tool.name in allowed_tools:
+                model_schema=model_from_schema(tool.name, tool.inputSchema)
+                print("model_json_schema",model_schema.model_json_schema())
+                print("inputSchema",tool.inputSchema)
                 mcp_tool = MCPTool(
                     name=tool.name,
                     description=tool.description,
-                    tool_call_schema=model_from_schema(tool.name, tool.inputSchema),
+                    tool_call_schema=model_schema,
                     session=mcp_server,
                 )
                 self.register_tool(mcp_tool)
+                print("注册后的工具:",self.tools)
 
     @property
     def tools(self) -> List[ChatCompletionToolParam]:

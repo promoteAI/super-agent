@@ -11,7 +11,7 @@ from typing_extensions import Annotated
 
 from super_agent.agents.base import BaseAgent
 from super_agent.openai.tools import ChatCompletionToolParam, create_tool
-from super_agent.pydantic import ConfiguredBaseModel
+from super_agent.pydantic_utils import ConfiguredBaseModel
 from super_agent.utils.options import validate_options
 
 
