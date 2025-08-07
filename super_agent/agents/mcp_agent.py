@@ -80,7 +80,7 @@ async def create_mcp_agent(
         capabilities=AgentCapabilities(
             pushNotifications=False,
             stateTransitionHistory=False,
-            streaming=True
+            streaming=True,
         ),
         defaultInputModes=["text"],
         defaultOutputModes=["text"],

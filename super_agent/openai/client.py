@@ -76,14 +76,25 @@ if __name__ == '__main__':
             }
         }
     ]
-
-    # 使用OpenAI官方库进行调用
+    # 使用OpenAI官方库进行调用,流式输出
+    # response = client.chat.completions.create(
+    #     model="llama3.2",
+    #     messages=messages,
+    #     temperature=0.5,
+    #     # tools=tools,
+    #     tool_choice="auto",
+    #     stream=False,
+    # )
+    # print(response)
+    # 使用OpenAI官方库进行调用,流式输出
     response = client.chat.completions.create(
         model="llama3.2",
         messages=messages,
         temperature=0.5,
-        tools=tools,
-        tool_choice="auto"
+        # tools=tools,
+        tool_choice="auto",
+        stream=True
     )
 
-    print(response.choices[0])
+    for chunk in response:
+        print(chunk.choices[0].delta, end="")
