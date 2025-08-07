@@ -132,7 +132,6 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
                         root=TextPart(text=chunk.choices[0].delta.content, kind="text")
                     )
                 ],
-                taskId=context_id
             ))  # 添加await关键字
                 break
             while tool_calls:
@@ -171,8 +170,7 @@ class BaseAgent(ConfiguredBaseModel, AgentExecutor, AgentCard):
                     Part(
                         root=TextPart(text=chunk.choices[0].delta.content, kind="text")
                     )
-                ],
-                taskId=context_id
+                ]
             ))  # 添加await关键字
 
     async def _process_message(
