@@ -14,6 +14,8 @@
 ```bash
 cd super_agent
 uv run main.py
+
+uv run super_agent/agents
 ```
 
 ### 2. 启动前端UI服务

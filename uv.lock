@@ -10,20 +10,21 @@ resolution-markers = [
 
 [[package]]
 name = "a2a-sdk"
-version = "0.2.5"
+version = "0.3.0"
 source = { registry = "https://repo.huaweicloud.com/repository/pypi/simple" }
 dependencies = [
+    { name = "fastapi" },
+    { name = "google-api-core" },
     { name = "httpx" },
     { name = "httpx-sse" },
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-sdk" },
+    { name = "protobuf" },
     { name = "pydantic" },
     { name = "sse-starlette" },
     { name = "starlette" },
 ]
-sdist = { url = "https://repo.huaweicloud.com/repository/pypi/packages/61/c4/4fbb805dbabbef1035abdd7fac6d8514ed92e6916304a74c1ea429c9ef79/a2a_sdk-0.2.5.tar.gz", hash = "sha256:d2bc0842ef9dda8bb127b1d07e0b4e3678127cb517cf1e9d46cbc40de944c2ac" }
+sdist = { url = "https://repo.huaweicloud.com/repository/pypi/packages/f2/50/705f7972114dd0fe918840eb966533e511358f9881ddcdc0adebe64768c9/a2a_sdk-0.3.0.tar.gz", hash = "sha256:a07835e980222b1274af2c71f641c18b022d119b95aacdc7104385c09f35dc8f" }
 wheels = [
-    { url = "https://repo.huaweicloud.com/repository/pypi/packages/25/d7/c8623ac2d6a78ad95030357051a06a4d400ca650bf256a1151b52149b238/a2a_sdk-0.2.5-py3-none-any.whl", hash = "sha256:00962245941937964074ae9dfa3aad05f2e156a20501d6bfaadb9cce096279c5" },
+    { url = "https://repo.huaweicloud.com/repository/pypi/packages/ee/b7/93c48f9857980a6af2a242050d559d74df394d1b45d4f33226fb027e39e6/a2a_sdk-0.3.0-py3-none-any.whl", hash = "sha256:8a0a0fc58013b055174b18e6849b68b129a50f31d41184d222da59f94ef29da7" },
 ]
 
 [[package]]
@@ -3488,7 +3489,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "a2a-sdk", specifier = ">=0.2.5" },
+    { name = "a2a-sdk", specifier = "==0.3.0" },
     { name = "ag-ui-protocol", specifier = ">=0.1.5" },
     { name = "bs4", specifier = ">=0.0.2" },
     { name = "click", specifier = ">=8.1.8" },

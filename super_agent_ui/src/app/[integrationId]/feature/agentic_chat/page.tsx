@@ -50,7 +50,7 @@ const Chat = () => {
       <div className="w-8/10 h-8/10 rounded-lg">
         <CopilotChat
           className="h-full rounded-2xl"
-          labels={{ initial: "你好，我是网络搜索agent，想和我聊天吗？" }}
+          labels={{}}
         />
       </div>
     </div>

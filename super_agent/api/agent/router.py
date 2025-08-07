@@ -146,6 +146,99 @@ async def process_message(
         )
     )
 
+async def process_stream_message(
+    agentId: str, message: RunAgentInput  # noqa: N803
+) -> AsyncGenerator[str, None]:
+    """
+    参考loop_client.py，使用A2AClient发送流式请求，并将响应内容以SSE格式返回。
+    """
+    import httpx
+    from a2a.client import A2AClient
+    from a2a.types import MessageSendParams, SendStreamingMessageRequest
+
+    encoder = EventEncoder()
+
+    # 发送run started事件
+    yield encoder.encode(
+        RunStartedEvent(
+            type=EventType.RUN_STARTED,
+            thread_id=message.thread_id,
+            run_id=message.run_id,
+        )
+    )
+
+    # 生成assistant消息ID
+    message_id = uuid.uuid4().hex
+
+    # 获取用户输入内容
+    last_message_content = None
+    if message.messages and len(message.messages) > 0:
+        last_message = message.messages[-1]
+        last_message_content = last_message.content
+
+    # 构造A2A消息参数
+    send_message_payload = {
+        'message': {
+            'role': 'user',
+            'parts': [{'type': 'text', 'text': last_message_content}],
+            'messageId': message_id,
+        },
+    }
+
+    # 使用A2AClient发送流式请求
+    async with httpx.AsyncClient() as httpx_client:
+        client = A2AClient(
+            httpx_client,
+            url='http://localhost:10001'  # TODO: 可根据agentId动态路由
+        )
+        streaming_request = SendStreamingMessageRequest(
+            id=uuid.uuid4().hex,
+            params=MessageSendParams(**send_message_payload)
+        )
+        stream_response = client.send_message_streaming(streaming_request)
+
+        started = False
+        async for chunk in stream_response:
+            # 首次发送assistant消息开始事件
+            if not started:
+                yield encoder.encode(
+                    TextMessageStartEvent(
+                        type=EventType.TEXT_MESSAGE_START,
+                        message_id=message_id,
+                        role="assistant",
+                    )
+                )
+                started = True
+
+            # 解析chunk内容
+            data = chunk.model_dump(mode='json', exclude_none=True)
+            delta = ""
+            if data["result"].get("artifact"):
+                delta = data["result"]["artifact"]["parts"][0]["text"]
+            print(delta, end='', flush=True)
+            await asyncio.sleep(0.1)
+            if delta:
+                yield encoder.encode(
+                    TextMessageContentEvent(
+                        type=EventType.TEXT_MESSAGE_CONTENT,
+                        message_id=message_id,
+                        delta=delta,
+                    )
+                )
+
+    # assistant消息结束
+    yield encoder.encode(
+        TextMessageEndEvent(type=EventType.TEXT_MESSAGE_END, message_id=message_id)
+    )
+
+    # run finished事件
+    yield encoder.encode(
+        RunFinishedEvent(
+            type=EventType.RUN_FINISHED,
+            thread_id=message.thread_id,
+            run_id=message.run_id,
+        )
+    )
 
 @router.post(
     "{agentId}/start", description="Send new chat message and start processing."
@@ -158,7 +251,8 @@ async def send_message(
     # Generate a unique job id
     job_id = message.run_id
     # Store the generator for streaming responses.
-    job_generators[job_id] = process_message(agentId, message)
+    # job_generators[job_id] = process_message(agentId, message)
+    job_generators[job_id] = process_stream_message(agentId, message)
     # Return the job id to the client.
     return {"runId": job_id}
 
