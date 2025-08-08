@@ -10,12 +10,12 @@ from super_agent.openai.client import get_client
 from super_agent.settings import settings
 
 
-def ensure_llama3_exists():
+def ensure_llama3_exists(model_name: str):
     """
-    检查本地是否存在llama3.2模型，如果不存在则使用ollama拉取部署。
+    检查本地是否存在指定的模型，如果不存在则使用ollama拉取部署。
     """
     try:
-        # 检查llama3.2模型是否已存在
+        # 检查指定模型是否已存在
         result = subprocess.run(
             ["ollama", "list"],
             stdout=subprocess.PIPE,
@@ -26,24 +26,24 @@ def ensure_llama3_exists():
             print("无法执行ollama list，请确保ollama已安装并在PATH中。")
             return False
 
-        # 检查输出中是否有llama3.2
-        if "llama3:2" not in result.stdout and "llama3.2" not in result.stdout:
-            print("本地未检测到llama3.2模型，正在使用ollama拉取...")
+        # 检查输出中是否有指定模型
+        if model_name not in result.stdout:
+            print(f"本地未检测到{model_name}模型，正在使用ollama拉取...")
             pull_result = subprocess.run(
-                ["ollama", "pull", "llama3:2"],
+                ["ollama", "pull", model_name],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 encoding="utf-8"
             )
             if pull_result.returncode != 0:
-                print(f"ollama拉取llama3:2失败：{pull_result.stderr}")
+                print(f"ollama拉取{model_name}失败：{pull_result.stderr}")
                 return False
-            print("llama3.2模型拉取完成。")
+            print(f"{model_name}模型拉取完成。")
         else:
-            print("llama3.2模型已存在。")
+            print(f"{model_name}模型已存在。")
         return True
     except Exception as e:
-        print(f"检查或拉取llama3.2模型时发生异常：{e}")
+        print(f"检查或拉取{model_name}模型时发生异常：{e}")
         return False
 
 
@@ -54,8 +54,7 @@ class TravelPlannerAgent:
         """初始化旅行对话模型"""
         # 检查并确保llama3.2模型存在
         model_name = os.getenv("MODEL_NAME", "llama3.2")
-        if "llama3" in model_name:
-            ensure_llama3_exists()
+        ensure_llama3_exists(model_name=model_name)
         self.client = get_client(
             OpenAI, options=settings.openai_model_config
         )
