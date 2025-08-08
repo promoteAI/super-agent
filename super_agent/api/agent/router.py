@@ -151,6 +151,7 @@ async def process_stream_message(
 ) -> AsyncGenerator[str, None]:
     """
     参考loop_client.py，使用A2AClient发送流式请求，并将响应内容以SSE格式返回。
+    针对send_message_streaming流式延迟很久的问题，去除await asyncio.sleep(0.1)以减少延迟。
     """
     import httpx
     from a2a.client import A2AClient
@@ -199,6 +200,7 @@ async def process_stream_message(
 
         started = False
         async for chunk in stream_response:
+            print(chunk)
             # 首次发送assistant消息开始事件
             if not started:
                 yield encoder.encode(
@@ -215,8 +217,9 @@ async def process_stream_message(
             delta = ""
             if data["result"].get("artifact"):
                 delta = data["result"]["artifact"]["parts"][0]["text"]
-            print(delta, end='', flush=True)
-            await asyncio.sleep(0.1)
+            
+            # 去除延迟，提升流式响应速度
+            # await asyncio.sleep(0.1)
             if delta:
                 yield encoder.encode(
                     TextMessageContentEvent(
@@ -279,8 +282,3 @@ async def agui_send_message_streaming(input_data: RunAgentInput, request: Reques
 
     # 获取流式响应
     return await stream_message(runId)    
-    
-    
-
-    
-    

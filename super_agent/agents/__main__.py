@@ -1,6 +1,7 @@
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.request_handlers import DefaultRequestHandler
 from a2a.server.tasks import InMemoryTaskStore
+from a2a.server.events import InMemoryQueueManager
 from a2a.types import (
     AgentCapabilities,
     AgentCard,
@@ -23,15 +24,16 @@ if __name__ == '__main__':
         description='travel planner',
         url='http://localhost:10001/',
         version='1.0.0',
-        defaultInputModes=['text'],
-        defaultOutputModes=['text'],
-        capabilities=AgentCapabilities(streaming=True),
+        default_input_modes=['text'],
+        default_output_modes=['text'],
+        capabilities=AgentCapabilities(streaming=True,push_notifications=True,state_transition_history=True),
         skills=[skill],
     )
 
     request_handler = DefaultRequestHandler(
         agent_executor=TravelPlannerAgentExecutor(),
         task_store=InMemoryTaskStore(),
+        queue_manager=InMemoryQueueManager(),
     )
 
     server = A2AStarletteApplication(
