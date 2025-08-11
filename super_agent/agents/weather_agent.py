@@ -3,7 +3,7 @@ import os
 from collections.abc import AsyncGenerator
 from typing import Any
 from openai import OpenAI
-from super_agent.openai.client import get_client
+from super_agent.openai_cli.client import get_client
 from super_agent.settings import settings
 
 def ensure_llama3_exists(model_name: str):

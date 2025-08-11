@@ -10,7 +10,7 @@ from openai.types.chat.chat_completion_tool_param import ChatCompletionToolParam
 from pydantic import BaseModel, PrivateAttr, ValidationError
 
 from super_agent.messages.create import ChatCompletionToolMessageParam, create_message
-from super_agent.openai.tools import create_tool
+from super_agent.openai_cli.tools import create_tool
 from super_agent.utils.options import BaseOptions, validate_options
 
 T = TypeVar("T", bound=BaseModel)

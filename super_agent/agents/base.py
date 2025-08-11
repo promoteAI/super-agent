@@ -20,8 +20,8 @@ from super_agent.messages.create import (
     ChatCompletionToolMessageParam,
     create_message,
 )
-from super_agent.openai.client import get_client
-from super_agent.openai.tools import ChatCompletionToolParam
+from super_agent.openai_cli.client import get_client
+from super_agent.openai_cli.tools import ChatCompletionToolParam
 from super_agent.pydantic_utils import ConfiguredBaseModel
 from super_agent.tools.registry import ToolRegistry
 from super_agent.settings import settings
