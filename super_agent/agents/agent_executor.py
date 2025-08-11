@@ -29,7 +29,7 @@ class TravelPlannerAgentExecutor(AgentExecutor):
             raise Exception('No message provided')
 
         async for event in self.agent.stream(query):
-            print(event)
+            print(event['content'],event_queue.queue.qsize())
             message = TaskArtifactUpdateEvent(
                 context_id=context.context_id,  # type: ignore
                 task_id=context.task_id,  # type: ignore
